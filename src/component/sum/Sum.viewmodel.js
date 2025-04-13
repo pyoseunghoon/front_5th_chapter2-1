@@ -1,5 +1,5 @@
-import cartDisp from '../cartDisplay/CartDisplay.js';
-import prodList from '../sel/Sel.Model.js';
+import { getCartDispElement } from '../cartDisplay/CartDisplay.js';
+import ProductModel from '../sel/Sel.Model.js';
 
 // 할인이 적용된 총액
 let total = 0;
@@ -90,13 +90,13 @@ function getDiscountRate(curItemCount, curItem) {
  */
 export function updateCartStatus() {
   // 사용자가 담은 items
-  let cartItems = cartDisp.children;
+  let cartItems = getCartDispElement().children;
   if (cartItems.length === 0) {
     total = 0;
     itemCnt = 0;
     originTotal = 0;
   } else {
-    getTotalSum(prodList, cartItems);
+    getTotalSum(ProductModel.getList(), cartItems);
   }
 }
 
@@ -130,7 +130,6 @@ export function updateTotalDiscountRate() {
 }
 
 export function updatePoint() {
-  bonusPts = 0;
   bonusPts = Math.floor(total / 1000);
   return bonusPts;
 }

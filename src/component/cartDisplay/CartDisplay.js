@@ -1,4 +1,13 @@
-const cartDisp = document.createElement('div');
-cartDisp.id = 'cart-items';
+let cartDisp;
 
-export default cartDisp;
+function createCartDispElement() {
+  cartDisp = document.createElement('div');
+  cartDisp.id = 'cart-items';
+  return cartDisp;
+}
+
+function getCartDispElement() {
+  return cartDisp;
+}
+
+export { createCartDispElement, getCartDispElement };

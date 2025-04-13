@@ -20,7 +20,7 @@ function createSumText() {
  */
 export function createPointText() {
   let bonusPts = updatePoint();
-
+  console.log('bonusPts:', bonusPts);
   let pointElement = document.getElementById('loyalty-points');
 
   if (!pointElement) {
@@ -38,7 +38,7 @@ export function createPointText() {
 function createDiscountText() {
   const rate = getTotalDiscountRate();
   if (rate > 0) {
-    var span = document.createElement('span');
+    let span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (rate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
