@@ -19,6 +19,26 @@ const ProductModel = (function () {
     return list.find((l) => l.id === id);
   }
 
+  function increaseQuantity(id, amount=1) {
+    const item = findList(id);
+
+    if (item) {
+      item.q += amount;
+      return true;
+    }
+    return false;
+  }
+
+  function decreaseQuantity(id, amount=1) {
+    const item = findList(id);
+
+    if (item && item.q >= amount) {
+      item.q -= amount;
+      return true;
+    }
+    return false;
+  }
+
 
   function getLastSel() {
     return lastSel;
@@ -65,6 +85,8 @@ const ProductModel = (function () {
   return {
     getList,
     findList,
+    increaseQuantity,
+    decreaseQuantity,
     alertItemSale,
     alertItemSuggest,
     setLastSel,
