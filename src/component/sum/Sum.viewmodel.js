@@ -9,6 +9,9 @@ let originTotal = 0;
 let itemCnt = 0;
 // 최종 할인율
 let discountRate = 0;
+// 포인트
+let bonusPts = 0;
+
 /**
  *
  * @param prodList  판매 상품 목록
@@ -124,6 +127,12 @@ export function updateTotalDiscountRate() {
     total *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
   }
+}
+
+export function updatePoint() {
+  bonusPts = 0;
+  bonusPts = Math.floor(total / 1000);
+  return bonusPts;
 }
 
 export function getCartTotal() {

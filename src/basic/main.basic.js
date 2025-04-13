@@ -1,20 +1,19 @@
 import cartDisp from '../component/cartDisplay/CartDisplay.js';
 import { sel, addBtn } from '../component/sel/Sel.js';
-import stockInfo from '../component/stockInfo/StockInfo.js';
+import { createStockInfoElement } from '../component/stockInfo/StockInfo.js';
 import { updateSelectProductList } from '../component/sel/Sel.viewmodel.js';
-import { sum, createSumElement, createSumText, createDiscountText } from '../component/sum/Sum.js';
-import createTitleElement from '../component/title/Title.js';
+import { updateStockInfo } from '../component/stockInfo/StockInfo.viewmodel.js';
 import {
-  getCartOriginTotal,
-  getCartTotal,
-  getTotalDiscountRate,
-  updateCartStatus,
-  updateTotalDiscountRate,
-} from '../component/sum/Sum.viewmodel.js';
+  createSumElement,
+  createSumText,
+  createDiscountText,
+  createPointText,
+} from '../component/sum/Sum.js';
+import createTitleElement from '../component/title/Title.js';
+import { updateCartStatus, updateTotalDiscountRate } from '../component/sum/Sum.viewmodel.js';
+import prodList from '../component/sel/Sel.Model.js';
 
-var prodList;
-var lastSel,
-  bonusPts = 0;
+var lastSel;
 
 /**
  * 화면을 구성하는 기본 element를 만든다.
@@ -50,21 +49,13 @@ function createElements() {
   wrap.appendChild(createSumElement());
   wrap.appendChild(sel);
   wrap.appendChild(addBtn);
-  wrap.appendChild(stockInfo);
+  wrap.appendChild(createStockInfoElement());
 
   content.appendChild(wrap);
   root.appendChild(content);
 }
 
 function main() {
-  prodList = [
-    { id: 'p1', name: '상품1', val: 10000, q: 50 },
-    { id: 'p2', name: '상품2', val: 20000, q: 30 },
-    { id: 'p3', name: '상품3', val: 30000, q: 20 },
-    { id: 'p4', name: '상품4', val: 15000, q: 0 },
-    { id: 'p5', name: '상품5', val: 25000, q: 10 },
-  ];
-
   // 화면의 element 구성
   createElements();
 
@@ -79,7 +70,7 @@ function main() {
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateSelOpts();
+        // updateSelOpts();
       }
     }, 30000);
   }, Math.random() * 10000);
@@ -92,23 +83,13 @@ function main() {
         if (suggest) {
           alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
           suggest.val = Math.round(suggest.val * 0.95);
-          updateSelOpts();
+          // updateSelOpts();
         }
       }
     }, 60000);
   }, Math.random() * 20000);
 }
 
-function updateSelOpts() {
-  sel.innerHTML = '';
-  prodList.forEach(function (item) {
-    var opt = document.createElement('option');
-    opt.value = item.id;
-    opt.textContent = item.name + ' - ' + item.val + '원';
-    if (item.q === 0) opt.disabled = true;
-    sel.appendChild(opt);
-  });
-}
 function calcCart() {
   // 장바구니 정보 계산
   updateCartStatus(); // 사용자의 장바구니 목록의 상태 정보 갱신 ( 기본금액, 할인된금액, 구매한 상품 개수 )
@@ -118,31 +99,11 @@ function calcCart() {
   createSumText();
   createDiscountText();
 
+  // 재고 정보 UI Update
   updateStockInfo();
-  renderBonusPts();
+  createPointText();
 }
 
-const renderBonusPts = () => {
-  bonusPts = Math.floor(getCartTotal() / 1000);
-  var ptsTag = document.getElementById('loyalty-points');
-  if (!ptsTag) {
-    ptsTag = document.createElement('span');
-    ptsTag.id = 'loyalty-points';
-    ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
-  }
-  ptsTag.textContent = '(포인트: ' + bonusPts + ')';
-};
-function updateStockInfo() {
-  var infoMsg = '';
-  prodList.forEach(function (item) {
-    if (item.q < 5) {
-      infoMsg +=
-        item.name + ': ' + (item.q > 0 ? '재고 부족 (' + item.q + '개 남음)' : '품절') + '\n';
-    }
-  });
-  stockInfo.textContent = infoMsg;
-}
 main();
 addBtn.addEventListener('click', function () {
   var selItem = sel.value;
@@ -185,6 +146,11 @@ addBtn.addEventListener('click', function () {
     calcCart();
     lastSel = selItem;
   }
+
+  console.log(
+    '[추가]',
+    prodList.map((p) => `${p.name}:${p.q}`),
+  );
 });
 cartDisp.addEventListener('click', function (event) {
   var tgt = event.target;
@@ -217,4 +183,8 @@ cartDisp.addEventListener('click', function (event) {
     }
     calcCart();
   }
+  console.log(
+    '[+, -]',
+    prodList.map((p) => `${p.name}:${p.q}`),
+  );
 });

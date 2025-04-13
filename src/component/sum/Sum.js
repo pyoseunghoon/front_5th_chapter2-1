@@ -1,4 +1,4 @@
-import { getCartTotal, getTotalDiscountRate } from './Sum.viewmodel.js';
+import { getCartTotal, getTotalDiscountRate, updatePoint } from './Sum.viewmodel.js';
 
 let sum;
 function createSumElement() {
@@ -13,6 +13,23 @@ function createSumElement() {
  */
 function createSumText() {
   sum.textContent = '총액: ' + Math.round(getCartTotal()) + '원';
+}
+
+/**
+ * 포인트 표기
+ */
+export function createPointText() {
+  let bonusPts = updatePoint();
+
+  let pointElement = document.getElementById('loyalty-points');
+
+  if (!pointElement) {
+    pointElement = document.createElement('span');
+    pointElement.id = 'loyalty-points';
+    pointElement.className = 'text-blue-500 ml-2';
+    sum.appendChild(pointElement);
+  }
+  pointElement.textContent = '(포인트: ' + bonusPts + ')';
 }
 
 /**
