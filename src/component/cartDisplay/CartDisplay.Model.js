@@ -3,10 +3,10 @@ import { createCartItemElement } from './CartDisplay.js';
 import { calcCart } from './CartDisplay.viewmodel.js';
 /**
  * 사용자가 선택한 상품을 장바구니에 담는 기능
- * @param selId 판매 상품 Id
+ * @param productId 판매 상품 Id
  * @param selectedItem 판매 상품 정보
  */
-export function addItem(selId, selectedItem) {
+export function addItem(productId, selectedItem) {
   // 선택한 item의 재고 존재시
   if (selectedItem && selectedItem.q > 0) {
     let item = document.getElementById(selectedItem.id);
@@ -19,7 +19,7 @@ export function addItem(selId, selectedItem) {
         // 장바구니 수량 UI 갱신
         updateItemInfo(item, selectedItem, tempQuantity);
         // 실제 상품 수량 갱신
-        ProductModel.decreaseQuantity(selId, 1);
+        ProductModel.decreaseQuantity(productId, 1);
       } else {
         alert('재고가 부족합니다.');
       }
@@ -29,13 +29,62 @@ export function addItem(selId, selectedItem) {
       // 장바구니 목록 UI 추가
       createCartItemElement(selectedItem);
       // 실제 상품 수량 갱신
-      ProductModel.decreaseQuantity(selId, 1);
+      ProductModel.decreaseQuantity(productId, 1);
     }
     calcCart();
-    ProductModel.setLastSel(selId);
+    ProductModel.setLastSel(productId);
   }
 }
 
+/**
+ *
+ * @param productId 장바구니 목록 id
+ * @param change 변경될 개수
+ */
+export function clickButtonAdd(productId, change) {
+  let itemElem = document.getElementById(productId);
+  let selectedItem = ProductModel.findList(productId);
+
+  let tempQuantity = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + change;
+
+  if (
+    tempQuantity > 0 &&
+    tempQuantity <=
+      selectedItem.q + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
+  ) {
+    // 장바구니 수량 UI 갱신
+    updateItemInfo(itemElem, selectedItem, tempQuantity);
+    // 실제 상품 수량 갱신
+    ProductModel.decreaseQuantity(productId, change);
+  } else if (tempQuantity <= 0) {
+    // 장바구니 수량 UI 갱신
+    itemElem.remove();
+    // 실제 상품 수량 갱신
+    ProductModel.decreaseQuantity(productId, change);
+  } else {
+    alert('재고가 부족합니다.');
+  }
+}
+
+/**
+ *
+ * @param productId 장바구니 목록 id
+ * @param change 변경될 개수
+ */
+export function clickButtonRemove(productId, change) {
+  let itemElem = document.getElementById(productId);
+  // 장바구니 수량 UI 갱신
+  itemElem.remove();
+  // 실제 상품 수량 갱신
+  ProductModel.increaseQuantity(productId, change);
+}
+
+/**
+ *
+ * @param itemElement 장바구니 목록 요소
+ * @param selectedItem 판매 상품 정보
+ * @param change 변경될 개수
+ */
 function updateItemInfo(itemElement, selectedItem, change) {
   itemElement.querySelector('span').textContent =
     selectedItem.name + ' - ' + selectedItem.val + '원 x ' + change;

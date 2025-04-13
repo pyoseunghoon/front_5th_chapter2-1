@@ -10,7 +10,11 @@ import { updateSelectProductList } from '../component/sel/Sel.viewmodel.js';
 import { createSumElement } from '../component/sum/Sum.js';
 import createTitleElement from '../component/title/Title.js';
 import ProductModel from '../component/sel/Sel.Model.js';
-import { addItem } from '../component/cartDisplay/CartDisplay.Model.js';
+import {
+  addItem,
+  clickButtonAdd,
+  clickButtonRemove,
+} from '../component/cartDisplay/CartDisplay.Model.js';
 import { calcCart } from '../component/cartDisplay/CartDisplay.viewmodel.js';
 
 /**
@@ -76,46 +80,30 @@ document.addEventListener('click', (event) => {
 
   // '추가' 버튼 클릭 이벤트
   if (target.id === getAddBtnElement().id) {
-    let selId = getSelElement().value;
-    let selectedItem = ProductModel.findList(selId);
+    let productId = getSelElement().value;
+    let selectedItem = ProductModel.findList(productId);
 
     // 상품 담기
-    addItem(selId, selectedItem);
+    addItem(productId, selectedItem);
   }
 
   if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
-    let prodId = target.dataset.productId;
-    let itemElem = document.getElementById(prodId);
-    let selectedItem = ProductModel.findList(prodId);
+    let productId = target.dataset.productId;
+    let itemElem = document.getElementById(productId);
     let change;
 
     // 장바구니 + 버튼
     if (target.classList.contains('quantity-change')) {
       change = parseInt(target.dataset.change);
-      let tempQuantity =
-        parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + change;
 
-      if (
-        tempQuantity > 0 &&
-        tempQuantity <=
-          selectedItem.q + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
-      ) {
-        itemElem.querySelector('span').textContent =
-          itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + tempQuantity;
-        selectedItem.q -= change;
-      } else if (tempQuantity <= 0) {
-        itemElem.remove();
-        selectedItem.q -= change;
-      } else {
-        alert('재고가 부족합니다.');
-      }
+      clickButtonAdd(productId, change);
     }
 
     // 장바구니 - 버튼
     if (target.classList.contains('remove-item')) {
       change = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
-      selectedItem.q += change;
-      itemElem.remove();
+
+      clickButtonRemove(productId, change);
     }
 
     calcCart();
