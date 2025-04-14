@@ -9,7 +9,7 @@ import {
   getCartTotal,
   getOriginTotal,
   getItemCnt,
-} from './Sum.model.js';
+} from './Sum.Model.js';
 
 const MIN_DISCOUNT_QUANTITY = 10;
 
