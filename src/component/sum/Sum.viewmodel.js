@@ -1,16 +1,15 @@
 import { getCartDisplayElement } from '../cartDisplay/CartDisplay.js';
 import ProductModel from '../sel/Sel.Model.js';
-
-// 할인이 적용된 총액
-let total = 0;
-// 할인이 적용되지 않은 총액
-let originTotal = 0;
-// 총 구매한 상품의 개수
-let itemCnt = 0;
-// 최종 할인율
-let discountRate = 0;
-// 포인트
-let bonusPts = 0;
+import {
+  setTotal,
+  setOriginTotal,
+  setItemCnt,
+  setDiscountRate,
+  setBonusPts,
+  getCartTotal,
+  getOriginTotal,
+  getItemCnt,
+} from './Sum.model.js';
 
 const MIN_DISCOUNT_QUANTITY = 10;
 
@@ -27,9 +26,9 @@ const TUESDAY = 2;
  * @returns {{originTotal: number, total: number, itemCnt: number}}  {기본금액, 할인된금액, 구매한 상품 개수}
  */
 export function getTotalSum(prodList, $cartItems) {
-  total = 0;
-  itemCnt = 0;
-  originTotal = 0;
+  let total = 0;
+  let itemCnt = 0;
+  let originTotal = 0;
 
   for (let i = 0; i < $cartItems.length; i++) {
     (function () {
@@ -41,10 +40,13 @@ export function getTotalSum(prodList, $cartItems) {
       originTotal += curItemTotal;
 
       let discountRate = getDiscountRate(curItemCount, curItem);
-
       total += curItemTotal * (1 - discountRate);
     })();
   }
+
+  setTotal(total);
+  setOriginTotal(originTotal);
+  setItemCnt(itemCnt);
 }
 
 /**
@@ -92,9 +94,9 @@ export function updateCartStatus() {
   // 사용자가 담은 items
   let $cartItems = getCartDisplayElement().children;
   if ($cartItems.length === 0) {
-    total = 0;
-    itemCnt = 0;
-    originTotal = 0;
+    setTotal(0);
+    setItemCnt(0);
+    setOriginTotal(0);
   } else {
     getTotalSum(ProductModel.getList(), $cartItems);
   }
@@ -104,6 +106,11 @@ export function updateCartStatus() {
  * 적용된 할인율 개산
  */
 export function updateTotalDiscountRate() {
+  let total = getCartTotal();
+  let originTotal = getOriginTotal();
+  let itemCnt = getItemCnt();
+  let discountRate = 0;
+
   if (itemCnt >= BULK_DISCOUNT_ITEM_COUNT) {
     let bulkDiscountPrice = total * BULK_DISCOUNT_RATE; // 추가 할인시 가격
     let itemDiscountPrice = originTotal - total; // 기존 할인 가격
@@ -123,17 +130,14 @@ export function updateTotalDiscountRate() {
     total *= 1 - TUESDAY_DISCOUNT_RATE;
     discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_RATE);
   }
+
+  setTotal(total);
+  setDiscountRate(discountRate);
 }
 
 export function updatePoint() {
-  bonusPts = Math.floor(total / 1000);
-  return bonusPts;
-}
-
-export function getCartTotal() {
-  return total;
-}
-
-export function getTotalDiscountRate() {
-  return discountRate;
+  const total = getCartTotal();
+  const pts = Math.floor(total / 1000);
+  setBonusPts(pts);
+  return pts;
 }

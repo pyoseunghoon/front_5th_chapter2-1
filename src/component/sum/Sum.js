@@ -1,4 +1,5 @@
-import { getCartTotal, getTotalDiscountRate, updatePoint } from './Sum.viewmodel.js';
+import { updatePoint } from './Sum.viewmodel.js';
+import { getCartTotal, getTotalDiscountRate } from './Sum.Model.js';
 
 let $sum;
 

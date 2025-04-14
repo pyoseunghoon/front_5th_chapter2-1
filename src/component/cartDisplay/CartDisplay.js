@@ -1,5 +1,7 @@
 let $cartDisplay;
 
+const TEXT_CART_ITEM = (name, price, count) => `${name} - ${price}원 x ${count}`;
+
 /**
  * 장바구니 div 렌더
  * @returns {HTMLDivElement}
@@ -82,4 +84,18 @@ function createCartItemElement(selectedItem) {
   $cartDisplay.appendChild($newItem);
 }
 
-export { createCartDisplayElement, getCartDisplayElement, createCartItemElement };
+/**
+ *
+ * @param itemElement 장바구니 목록 요소
+ * @param selectedItem 판매 상품 정보
+ * @param change 변경될 개수
+ */
+function updateItemInfo($itemElement, selectedItem, change) {
+  $itemElement.querySelector('span').textContent = TEXT_CART_ITEM(
+    selectedItem.name,
+    selectedItem.price,
+    change,
+  );
+}
+
+export { createCartDisplayElement, getCartDisplayElement, createCartItemElement, updateItemInfo };

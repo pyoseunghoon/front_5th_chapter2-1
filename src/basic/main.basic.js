@@ -6,16 +6,20 @@ import {
   getAddBtnElement,
 } from '../component/sel/Sel.js';
 import { createStockInfoElement } from '../component/stockInfo/StockInfo.js';
-import { updateSelectProductList } from '../component/sel/Sel.viewmodel.js';
+import {
+  alertItemSale,
+  alertItemSuggest,
+  updateSelectProductList,
+} from '../component/sel/Sel.viewmodel.js';
 import { createSumElement } from '../component/sum/Sum.js';
 import createTitleElement from '../component/title/Title.js';
 import ProductModel from '../component/sel/Sel.Model.js';
 import {
   addItem,
+  calcCart,
   clickButtonAdd,
   clickButtonRemove,
-} from '../component/cartDisplay/CartDisplay.Model.js';
-import { calcCart } from '../component/cartDisplay/CartDisplay.viewmodel.js';
+} from '../component/cartDisplay/CartDisplay.viewmodel.js';
 
 /**
  * 화면을 구성하는 기본 element를 만든다.
@@ -67,10 +71,10 @@ function main() {
   calcCart();
 
   // 상품 세일 제안 기능
-  ProductModel.alertItemSale();
+  alertItemSale();
 
   // 상품 제안 기능
-  ProductModel.alertItemSuggest();
+  alertItemSuggest();
 }
 
 main();
