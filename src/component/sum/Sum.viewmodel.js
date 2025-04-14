@@ -87,7 +87,6 @@ function getDiscountRate(curItemCount, curItem) {
 
 /**
  * 사용자의 장바구니 목록의 상태 정보 갱신
- * @returns {{originTotal: number, total: number, itemCnt: number}} {기본금액, 할인된금액, 구매한 상품 개수}
  */
 export function updateCartStatus() {
   // 사용자가 담은 items
@@ -103,10 +102,6 @@ export function updateCartStatus() {
 
 /**
  * 적용된 할인율 개산
- * @param total 할인된금액
- * @param originTotal 기본금액
- * @param itemCnt 구매한 상품 개수
- * @returns {number} 적용된 할인율 (%)
  */
 export function updateTotalDiscountRate() {
   if (itemCnt >= BULK_DISCOUNT_ITEM_COUNT) {
