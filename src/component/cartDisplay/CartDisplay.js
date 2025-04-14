@@ -1,13 +1,18 @@
-let cartDisp;
+let $cartDisplay;
 
-function createCartDispElement() {
-  cartDisp = document.createElement('div');
-  cartDisp.id = 'cart-items';
-  return cartDisp;
+/**
+ * 장바구니 div 렌더
+ * @returns {HTMLDivElement}
+ */
+function createCartDisplayElement() {
+  $cartDisplay = document.createElement('div');
+  $cartDisplay.id = 'cart-items';
+  return $cartDisplay;
 }
 
-function getCartDispElement() {
-  return cartDisp;
+// 장바구니 element getter
+function getCartDisplayElement() {
+  return $cartDisplay;
 }
 
 /**
@@ -17,9 +22,9 @@ function getCartDispElement() {
  * @returns {HTMLSpanElement}
  */
 function createCartItemText(selectedItem, quantity) {
-  const span = document.createElement('span');
-  span.textContent = `${selectedItem.name} - ${selectedItem.val}원 x ${quantity}`;
-  return span;
+  const $span = document.createElement('span');
+  $span.textContent = `${selectedItem.name} - ${selectedItem.price}원 x ${quantity}`;
+  return $span;
 }
 
 /**
@@ -29,12 +34,12 @@ function createCartItemText(selectedItem, quantity) {
  * @returns {HTMLButtonElement}
  */
 function createQuantityButton(id, change) {
-  const btn = document.createElement('button');
-  btn.className = 'quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1';
-  btn.dataset.productId = id;
-  btn.dataset.change = change;
-  btn.textContent = change > 0 ? '+' : '-';
-  return btn;
+  const $btn = document.createElement('button');
+  $btn.className = 'quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1';
+  $btn.dataset.productId = id;
+  $btn.dataset.change = change;
+  $btn.textContent = change > 0 ? '+' : '-';
+  return $btn;
 }
 
 /**
@@ -43,29 +48,38 @@ function createQuantityButton(id, change) {
  * @returns {HTMLButtonElement}
  */
 function createRemoveButton(id) {
-  const btn = document.createElement('button');
-  btn.className = 'remove-item bg-red-500 text-white px-2 py-1 rounded';
-  btn.dataset.productId = id;
-  btn.textContent = '삭제';
-  return btn;
+  const $btn = document.createElement('button');
+  $btn.className = 'remove-item bg-red-500 text-white px-2 py-1 rounded';
+  $btn.dataset.productId = id;
+  $btn.textContent = '삭제';
+  return $btn;
 }
 
+/**
+ * 장바구니 목록 렌더
+ * @param selectedItem
+ */
 function createCartItemElement(selectedItem) {
-  let newItem = document.createElement('div');
-  newItem.id = selectedItem.id;
-  newItem.className = 'flex justify-between items-center mb-2';
+  let $newItem = document.createElement('div');
+  $newItem.id = selectedItem.id;
+  $newItem.className = 'flex justify-between items-center mb-2';
 
-  const span = createCartItemText(selectedItem, 1);
-  const minusBtn = createQuantityButton(selectedItem.id, -1);
-  const plusBtn = createQuantityButton(selectedItem.id, 1);
-  const removeBtn = createRemoveButton(selectedItem.id);
+  const $span = createCartItemText(selectedItem, 1);
 
-  newItem.appendChild(span);
-  newItem.appendChild(minusBtn);
-  newItem.appendChild(plusBtn);
-  newItem.appendChild(removeBtn);
+  const $minusBtn = createQuantityButton(selectedItem.id, -1);
+  const $plusBtn = createQuantityButton(selectedItem.id, 1);
+  const $removeBtn = createRemoveButton(selectedItem.id);
 
-  cartDisp.appendChild(newItem);
+  const $groupDiv = document.createElement('div');
+
+  $groupDiv.appendChild($minusBtn);
+  $groupDiv.appendChild($plusBtn);
+  $groupDiv.appendChild($removeBtn);
+
+  $newItem.appendChild($span);
+  $newItem.appendChild($groupDiv);
+
+  $cartDisplay.appendChild($newItem);
 }
 
-export { createCartDispElement, getCartDispElement, createCartItemElement };
+export { createCartDisplayElement, getCartDisplayElement, createCartItemElement };

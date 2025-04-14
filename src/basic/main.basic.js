@@ -1,4 +1,4 @@
-import { createCartDispElement, getCartDispElement } from '../component/cartDisplay/CartDisplay.js';
+import { createCartDisplayElement } from '../component/cartDisplay/CartDisplay.js';
 import {
   createSelElement,
   createAddBtnElement,
@@ -20,21 +20,21 @@ import { calcCart } from '../component/cartDisplay/CartDisplay.viewmodel.js';
 /**
  * 화면을 구성하는 기본 element를 만든다.
  */
-const createBasicElement = {
-  root: () => {
-    const root = document.getElementById('app');
-    return root;
+const DomUtil = {
+  getRootElement: () => {
+    const $root = document.getElementById('app');
+    return $root;
   },
-  content: () => {
-    const content = document.createElement('div');
-    content.className = 'bg-gray-100 p-8';
-    return content;
+  createContentElement: () => {
+    const $content = document.createElement('div');
+    $content.className = 'bg-gray-100 p-8';
+    return $content;
   },
-  wrap: () => {
-    const wrap = document.createElement('div');
-    wrap.className =
+  createWrapperElement: () => {
+    const $wrap = document.createElement('div');
+    $wrap.className =
       'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
-    return wrap;
+    return $wrap;
   },
 };
 
@@ -42,19 +42,19 @@ const createBasicElement = {
  * 화면을 구성하는 element 생성
  */
 function createElements() {
-  const root = createBasicElement.root();
-  const content = createBasicElement.content();
-  const wrap = createBasicElement.wrap();
+  const $root = DomUtil.getRootElement();
+  const $content = DomUtil.createContentElement();
+  const $wrap = DomUtil.createWrapperElement();
 
-  wrap.appendChild(createTitleElement());
-  wrap.appendChild(createCartDispElement());
-  wrap.appendChild(createSumElement());
-  wrap.appendChild(createSelElement());
-  wrap.appendChild(createAddBtnElement());
-  wrap.appendChild(createStockInfoElement());
+  $wrap.appendChild(createTitleElement());
+  $wrap.appendChild(createCartDisplayElement());
+  $wrap.appendChild(createSumElement());
+  $wrap.appendChild(createSelElement());
+  $wrap.appendChild(createAddBtnElement());
+  $wrap.appendChild(createStockInfoElement());
 
-  content.appendChild(wrap);
-  root.appendChild(content);
+  $content.appendChild($wrap);
+  $root.appendChild($content);
 }
 
 function main() {
@@ -76,10 +76,10 @@ function main() {
 main();
 
 document.addEventListener('click', (event) => {
-  const target = event.target;
+  const $target = event.target;
 
   // '추가' 버튼 클릭 이벤트
-  if (target.id === getAddBtnElement().id) {
+  if ($target.id === getAddBtnElement().id) {
     let productId = getSelElement().value;
     let selectedItem = ProductModel.findList(productId);
 
@@ -87,21 +87,21 @@ document.addEventListener('click', (event) => {
     addItem(productId, selectedItem);
   }
 
-  if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
-    let productId = target.dataset.productId;
-    let itemElem = document.getElementById(productId);
+  if ($target.classList.contains('quantity-change') || $target.classList.contains('remove-item')) {
+    let productId = $target.dataset.productId;
+    let $itemElem = document.getElementById(productId);
     let change;
 
     // 장바구니 + 버튼
-    if (target.classList.contains('quantity-change')) {
-      change = parseInt(target.dataset.change);
+    if ($target.classList.contains('quantity-change')) {
+      change = parseInt($target.dataset.change);
 
       clickButtonAdd(productId, change);
     }
 
     // 장바구니 - 버튼
-    if (target.classList.contains('remove-item')) {
-      change = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
+    if ($target.classList.contains('remove-item')) {
+      change = parseInt($itemElem.querySelector('span').textContent.split('x ')[1]);
 
       clickButtonRemove(productId, change);
     }

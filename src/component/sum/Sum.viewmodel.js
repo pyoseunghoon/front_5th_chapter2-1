@@ -1,4 +1,4 @@
-import { getCartDispElement } from '../cartDisplay/CartDisplay.js';
+import { getCartDisplayElement } from '../cartDisplay/CartDisplay.js';
 import ProductModel from '../sel/Sel.Model.js';
 
 // 할인이 적용된 총액
@@ -12,22 +12,30 @@ let discountRate = 0;
 // 포인트
 let bonusPts = 0;
 
+const MIN_DISCOUNT_QUANTITY = 10;
+
+const BULK_DISCOUNT_ITEM_COUNT = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+
+const TUESDAY_DISCOUNT_RATE = 0.1;
+const TUESDAY = 2;
+
 /**
  *
  * @param prodList  판매 상품 목록
- * @param cartItems 사용자가 담은 상품 정보들
+ * @param $cartItems 사용자가 담은 상품 정보들
  * @returns {{originTotal: number, total: number, itemCnt: number}}  {기본금액, 할인된금액, 구매한 상품 개수}
  */
-export function getTotalSum(prodList, cartItems) {
+export function getTotalSum(prodList, $cartItems) {
   total = 0;
   itemCnt = 0;
   originTotal = 0;
 
-  for (let i = 0; i < cartItems.length; i++) {
+  for (let i = 0; i < $cartItems.length; i++) {
     (function () {
-      let curItem = findItem(prodList, cartItems[i].id);
-      let curItemCount = findItemCount(cartItems[i]);
-      let curItemTotal = curItem.val * curItemCount;
+      let curItem = findItem(prodList, $cartItems[i].id);
+      let curItemCount = findItemCount($cartItems[i]);
+      let curItemTotal = curItem.price * curItemCount;
 
       itemCnt += curItemCount;
       originTotal += curItemTotal;
@@ -61,8 +69,8 @@ function findItem(prodList, cartItemId) {
  * @param cartItem 사용자가 담은 상품 정보
  * @returns {number} 상품의 구매 개수
  */
-function findItemCount(cartItem) {
-  return parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
+function findItemCount($cartItem) {
+  return parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
 }
 
 /**
@@ -72,16 +80,9 @@ function findItemCount(cartItem) {
  * @returns {number} 구매상품에 대한 할인율
  */
 function getDiscountRate(curItemCount, curItem) {
-  let discountRate = 0;
-  if (curItemCount < 10) return discountRate;
+  if (curItemCount < MIN_DISCOUNT_QUANTITY) return 0;
 
-  if (curItem.id === 'p1') discountRate = 0.1;
-  else if (curItem.id === 'p2') discountRate = 0.15;
-  else if (curItem.id === 'p3') discountRate = 0.2;
-  else if (curItem.id === 'p4') discountRate = 0.05;
-  else if (curItem.id === 'p5') discountRate = 0.25;
-
-  return discountRate;
+  return ProductModel.DISCOUNT_RATES[curItem.id] || 0;
 }
 
 /**
@@ -90,13 +91,13 @@ function getDiscountRate(curItemCount, curItem) {
  */
 export function updateCartStatus() {
   // 사용자가 담은 items
-  let cartItems = getCartDispElement().children;
-  if (cartItems.length === 0) {
+  let $cartItems = getCartDisplayElement().children;
+  if ($cartItems.length === 0) {
     total = 0;
     itemCnt = 0;
     originTotal = 0;
   } else {
-    getTotalSum(ProductModel.getList(), cartItems);
+    getTotalSum(ProductModel.getList(), $cartItems);
   }
 }
 
@@ -108,13 +109,13 @@ export function updateCartStatus() {
  * @returns {number} 적용된 할인율 (%)
  */
 export function updateTotalDiscountRate() {
-  if (itemCnt >= 30) {
-    let bulkDisc = total * 0.25; // 추가 할인시 가격
-    let itemDisc = originTotal - total; // 기존 할인 가격
+  if (itemCnt >= BULK_DISCOUNT_ITEM_COUNT) {
+    let bulkDiscountPrice = total * BULK_DISCOUNT_RATE; // 추가 할인시 가격
+    let itemDiscountPrice = originTotal - total; // 기존 할인 가격
     // 추가 할인 가격이 클 경우에만 0.25 할인율 적용
-    if (bulkDisc > itemDisc) {
-      total = originTotal * (1 - 0.25);
-      discountRate = 0.25;
+    if (bulkDiscountPrice > itemDiscountPrice) {
+      total = originTotal * (1 - BULK_DISCOUNT_RATE);
+      discountRate = BULK_DISCOUNT_RATE;
     } else {
       discountRate = (originTotal - total) / originTotal;
     }
@@ -123,9 +124,9 @@ export function updateTotalDiscountRate() {
   }
 
   // 요일 할인 적용
-  if (new Date().getDay() === 2) {
-    total *= 1 - 0.1;
-    discountRate = Math.max(discountRate, 0.1);
+  if (new Date().getDay() === TUESDAY) {
+    total *= 1 - TUESDAY_DISCOUNT_RATE;
+    discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_RATE);
   }
 }
 
@@ -137,12 +138,7 @@ export function updatePoint() {
 export function getCartTotal() {
   return total;
 }
-export function getCartOriginTotal() {
-  return originTotal;
-}
-export function getCartItemCount() {
-  return itemCnt;
-}
+
 export function getTotalDiscountRate() {
   return discountRate;
 }

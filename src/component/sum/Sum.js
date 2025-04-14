@@ -1,18 +1,24 @@
 import { getCartTotal, getTotalDiscountRate, updatePoint } from './Sum.viewmodel.js';
 
-let sum;
+let $sum;
+
+const TOTAL_TEXT = (total) => `총액: ${Math.round(total)}원`;
+const POINT_TEXT = (pts) => `(포인트: ${pts})`;
+const DISCOUNT_TEXT = (rate) => `(${(rate * 100).toFixed(1)}% 할인 적용)`;
+
 function createSumElement() {
-  sum = document.createElement('div');
-  sum.id = 'cart-total';
-  sum.className = 'text-xl font-bold my-4';
-  return sum;
+  $sum = document.createElement('div');
+  $sum.id = 'cart-total';
+  $sum.className = 'text-xl font-bold my-4';
+  return $sum;
 }
 
 /**
  * 총 금액(total) 표기
  */
 function createSumText() {
-  sum.textContent = '총액: ' + Math.round(getCartTotal()) + '원';
+  const total = getCartTotal();
+  $sum.textContent = TOTAL_TEXT(total);
 }
 
 /**
@@ -20,16 +26,15 @@ function createSumText() {
  */
 export function createPointText() {
   let bonusPts = updatePoint();
-  console.log('bonusPts:', bonusPts);
-  let pointElement = document.getElementById('loyalty-points');
+  let $point = document.getElementById('loyalty-points');
 
-  if (!pointElement) {
-    pointElement = document.createElement('span');
-    pointElement.id = 'loyalty-points';
-    pointElement.className = 'text-blue-500 ml-2';
-    sum.appendChild(pointElement);
+  if (!$point) {
+    $point = document.createElement('span');
+    $point.id = 'loyalty-points';
+    $point.className = 'text-blue-500 ml-2';
+    $sum.appendChild($point);
   }
-  pointElement.textContent = '(포인트: ' + bonusPts + ')';
+  $point.textContent = POINT_TEXT(bonusPts);
 }
 
 /**
@@ -38,11 +43,11 @@ export function createPointText() {
 function createDiscountText() {
   const rate = getTotalDiscountRate();
   if (rate > 0) {
-    let span = document.createElement('span');
-    span.className = 'text-green-500 ml-2';
-    span.textContent = '(' + (rate * 100).toFixed(1) + '% 할인 적용)';
-    sum.appendChild(span);
+    let $span = document.createElement('span');
+    $span.className = 'text-green-500 ml-2';
+    $span.textContent = DISCOUNT_TEXT(rate);
+    $sum.appendChild($span);
   }
 }
 
-export { sum, createSumElement, createSumText, createDiscountText };
+export { createSumElement, createSumText, createDiscountText };
