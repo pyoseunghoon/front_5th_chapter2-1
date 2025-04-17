@@ -21,3 +21,5 @@ const SumView: React.FC = () => {
     </div>
   );
 };
+
+export default SumView;

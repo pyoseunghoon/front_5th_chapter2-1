@@ -1,5 +1,6 @@
 import React from 'react';
-import SumView from '../../react-zustand-app/src/components/SumView';
+import ProductSelect from './ui/ProductSelect';
+import SumView from './ui/SumView';
 
 const App = () => {
   return (
@@ -7,6 +8,7 @@ const App = () => {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
         <SumView />
+        <ProductSelect />
       </div>
     </div>
   );
