@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Product } from './useProductStore';
 import { useProductStore } from './useProductStore';
+import { MESSAGE_OUT_OF_STOCK } from '../ui/ProductSelect';
 
 export interface CartItem {
   id: string;
@@ -54,8 +55,14 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
 
   updateQuantity: (id, amount) => {
-    const prev = get().cartItems.find((i) => i.id === id);
-    if (!prev) return;
+    const selectedItem = useProductStore.getState().listItems.find((p) => p.id === id);
+    const availableStock = selectedItem?.quantity ?? 0;
+
+    // 재고 체크
+    if (amount > 0 && availableStock < amount) {
+      alert(MESSAGE_OUT_OF_STOCK);
+      return;
+    }
 
     if (amount > 0) {
       useProductStore.getState?.().decreaseStock(id, amount);
