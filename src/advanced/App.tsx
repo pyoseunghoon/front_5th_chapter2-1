@@ -5,8 +5,10 @@ import StockInfoView from './ui/StockInfoView';
 import CartList from './ui/CartList';
 import { useFlashSale } from './hooks/useFlashSale';
 import { useSuggestSale } from './hooks/useSuggestSale';
+import { UseRecalculate } from './hooks/useRecalculate';
 
 const App = () => {
+  UseRecalculate(); // 장바구니 마다 재 계산 useEffect 추가
   useFlashSale(); // 번개세일
   useSuggestSale(); // 세일제안
 
