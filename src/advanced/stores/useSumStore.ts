@@ -19,10 +19,10 @@ interface SumState {
 
 const MIN_DISCOUNT_QUANTITY = 10;
 
-const BULK_DISCOUNT_ITEM_COUNT = 30;
-const BULK_DISCOUNT_RATE = 0.25;
+export const BULK_DISCOUNT_ITEM_COUNT = 30;
+export const BULK_DISCOUNT_RATE = 0.25;
 
-const TUESDAY_DISCOUNT_RATE = 0.1;
+export const TUESDAY_DISCOUNT_RATE = 0.1;
 
 // 상품별 할인율
 const DISCOUNT_RATES = {

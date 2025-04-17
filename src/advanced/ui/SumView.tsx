@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSumStore } from '../stores/useSumStore';
+import { useUpdateDiscountRate } from '../hooks/useUpdateDiscountRate';
 
 const SumView: React.FC = () => {
   const total = useSumStore((state) => state.total);
@@ -9,6 +10,8 @@ const SumView: React.FC = () => {
   const TOTAL_TEXT = (total) => `총액: ${Math.round(total)}원`;
   const POINT_TEXT = (pts) => `(포인트: ${pts})`;
   const DISCOUNT_TEXT = (rate) => `(${(rate * 100).toFixed(1)}% 할인 적용)`;
+
+  useUpdateDiscountRate();
 
   return (
     <div id="cart-total" className="text-xl font-bold my-4">

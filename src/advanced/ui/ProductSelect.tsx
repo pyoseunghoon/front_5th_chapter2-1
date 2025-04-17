@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { useProductStore } from '../stores/useProductStore';
+import { useCartStore } from '../stores/useCartStore';
 
 const ProductSelect: React.FC = () => {
   const listItems = useProductStore((state) => state.listItems);
   const lastSelectedItem = useProductStore((state) => state.lastSelectedItem);
   const setLastSelectedItem = useProductStore((state) => state.setLastSelectedItem);
+
+  const addToCart = useCartStore((state) => state.addToCart);
 
   // 변경되었을 때 선택 상품 id 저장
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -16,7 +19,7 @@ const ProductSelect: React.FC = () => {
     const selected = listItems.find((item) => item.id === lastSelectedItem);
     if (!selected || selected.quantity === 0) return;
 
-    // TODO: addToCart()
+    addToCart(selected);
   };
 
   useEffect(() => {
