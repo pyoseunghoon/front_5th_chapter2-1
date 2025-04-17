@@ -1,9 +1,10 @@
 import React from 'react';
+import { useSumStore } from '../stores/useSumStore';
 
 const SumView: React.FC = () => {
-  const total = 0;
-  const discountRate = 0;
-  const bonusPts = 0;
+  const total = useSumStore((state) => state.total);
+  const discountRate = useSumStore((state) => state.discountRate);
+  const bonusPts = useSumStore((state) => state.bonusPts);
 
   const TOTAL_TEXT = (total) => `총액: ${Math.round(total)}원`;
   const POINT_TEXT = (pts) => `(포인트: ${pts})`;
