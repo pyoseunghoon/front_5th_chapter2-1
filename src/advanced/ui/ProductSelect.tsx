@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useProductStore } from '../stores/useProductStore';
 import { useCartStore } from '../stores/useCartStore';
 
+const MESSAGE_OUT_OF_STOCK = '재고가 부족합니다.';
+
 const ProductSelect: React.FC = () => {
   const listItems = useProductStore((state) => state.listItems);
   const lastSelectedItem = useProductStore((state) => state.lastSelectedItem);
@@ -16,10 +18,20 @@ const ProductSelect: React.FC = () => {
 
   const handleAddClick = () => {
     if (!lastSelectedItem) return;
-    const selected = listItems.find((item) => item.id === lastSelectedItem);
-    if (!selected || selected.quantity === 0) return;
+    const selectedItem = listItems.find((item) => item.id === lastSelectedItem);
+    if (!selectedItem || selectedItem.quantity === 0) return;
 
-    addToCart(selected);
+    const $item = document.getElementById(selectedItem.id);
+    const currentQuantity = $item
+      ? parseInt($item.querySelector('span')?.textContent?.split('x ')[1] || '0')
+      : 0;
+
+    if (selectedItem.quantity <= currentQuantity) {
+      alert(MESSAGE_OUT_OF_STOCK);
+      return;
+    }
+
+    addToCart(selectedItem);
   };
 
   useEffect(() => {
