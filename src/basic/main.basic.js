@@ -1,25 +1,25 @@
-import { createCartDisplayElement } from '../component/cartDisplay/CartDisplay.js';
+import { createCartDisplayElement } from './component/cartDisplay/CartDisplay.js';
 import {
   createSelElement,
   createAddBtnElement,
   getSelElement,
   getAddBtnElement,
-} from '../component/sel/Sel.js';
-import { createStockInfoElement } from '../component/stockInfo/StockInfo.js';
+} from './component/sel/Sel.js';
+import { createStockInfoElement } from './component/stockInfo/StockInfo.js';
 import {
   alertItemSale,
   alertItemSuggest,
   updateSelectProductList,
-} from '../component/sel/Sel.viewmodel.js';
-import { createSumElement } from '../component/sum/Sum.js';
-import createTitleElement from '../component/title/Title.js';
-import ProductModel from '../component/sel/Sel.Model.js';
+} from './component/sel/Sel.viewmodel.js';
+import { createSumElement } from './component/sum/Sum.js';
+import createTitleElement from './component/title/Title.js';
+import ProductModel from './component/sel/Sel.Model.js';
 import {
   addItem,
   calcCart,
   clickButtonAdd,
   clickButtonRemove,
-} from '../component/cartDisplay/CartDisplay.viewmodel.js';
+} from './component/cartDisplay/CartDisplay.viewmodel.js';
 
 /**
  * 화면을 구성하는 기본 element를 만든다.
